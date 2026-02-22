@@ -283,6 +283,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiKeyInput = document.getElementById('apiKey');
     const apiKeyStatus = document.getElementById('apiKeyStatus');
 
+    // Load API key from config if available
+    if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
+        apiKeyInput.value = CONFIG.OPENROUTER_API_KEY;
+    }
+
     // Enable input immediately since API key is pre-filled
     if (apiKeyInput && apiKeyInput.value.trim().length > 0) {
         userInput.disabled = false;
