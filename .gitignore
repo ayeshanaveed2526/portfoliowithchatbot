@@ -1,10 +1,7 @@
-# Environment variables
+# Environment variables (contains sensitive API keys)
 .env
 .env.local
 .env.production
-
-# API keys and sensitive config
-config.js
 
 # Node modules (if using build tools)
 node_modules/

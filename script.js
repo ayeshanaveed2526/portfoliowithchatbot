@@ -280,43 +280,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('userInput');
     const sendButton = document.getElementById('sendButton');
     const typingIndicator = document.getElementById('typingIndicator');
-    const apiKeyInput = document.getElementById('apiKey');
-    const apiKeyStatus = document.getElementById('apiKeyStatus');
 
-    // Load API key from config if available
-    if (typeof CONFIG !== 'undefined' && CONFIG.OPENROUTER_API_KEY) {
-        apiKeyInput.value = CONFIG.OPENROUTER_API_KEY;
-    }
-
-    // Enable input immediately since API key is pre-filled
-    if (apiKeyInput && apiKeyInput.value.trim().length > 0) {
-        userInput.disabled = false;
-        sendButton.disabled = false;
-        apiKeyStatus.style.display = 'block';
-    }
-
-    // Handle API key changes
-    if (apiKeyInput) {
-        apiKeyInput.addEventListener('input', function() {
-            const hasApiKey = this.value.trim().length > 0;
-            userInput.disabled = !hasApiKey;
-            sendButton.disabled = !hasApiKey;
-            
-            if (hasApiKey) {
-                userInput.focus();
-                apiKeyStatus.style.display = 'block';
-            } else {
-                apiKeyStatus.style.display = 'none';
-            }
-        });
-
-        // Save API key to localStorage when changed
-        apiKeyInput.addEventListener('change', function() {
-            if (this.value.trim()) {
-                localStorage.setItem('openrouter_api_key', this.value.trim());
-            }
-        });
-    }
+    // Enable input immediately (API key is now handled on server)
+    if (userInput) userInput.disabled = false;
+    if (sendButton) sendButton.disabled = false;
 
     function addMessage(text, isUser) {
         const messageDiv = document.createElement('div');
@@ -381,14 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function sendMessage() {
         const message = userInput.value.trim();
-        const apiKey = apiKeyInput.value.trim();
         
         if (!message) return;
-        
-        if (!apiKey) {
-            addMessage("⚠️ Please enter your Open Router API key first.", false);
-            return;
-        }
         
         // Add user message
         addMessage(message, true);
@@ -401,16 +362,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
         
         try {
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            // Call our secure backend API endpoint
+            const apiEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.API_ENDPOINT) 
+                ? CONFIG.API_ENDPOINT 
+                : '/api/chat';
+
+            const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                    'HTTP-Referer': window.location.href,
-                    'X-Title': 'Ayesha Chatbot'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: 'openai/gpt-3.5-turbo',
+                    message: message,
                     messages: [
                         {
                             role: 'system',
@@ -444,9 +407,7 @@ When answering:
                             role: 'user',
                             content: message
                         }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 800
+                    ]
                 })
             });
             
@@ -456,15 +417,17 @@ When answering:
             typingIndicator.style.display = 'none';
             
             if (data.error) {
-                addMessage(`Error: ${data.error.message}`, false);
-            } else {
+                addMessage(`Error: ${data.error.message || data.error}`, false);
+            } else if (data.choices && data.choices[0]) {
                 const botResponse = data.choices[0].message.content;
                 addMessage(botResponse, false);
+            } else {
+                addMessage('Sorry, I received an unexpected response. Please try again.', false);
             }
             
         } catch (error) {
             typingIndicator.style.display = 'none';
-            addMessage(`Error: ${error.message}. Please check your API key and try again.`, false);
+            addMessage(`Error: ${error.message}. Please try again.`, false);
         }
     }
 
@@ -479,10 +442,12 @@ When answering:
                 sendMessage();
             }
         });
+        // Focus on input when modal opens
+        userInput.focus();
     }
 
-    // Initial check for API key
-    if (apiKeyInput && apiKeyInput.value.trim().length > 0) {
+    // Placeholder for backward compatibility
+    if (false) {
         userInput.disabled = false;
         sendButton.disabled = false;
         apiKeyStatus.style.display = 'block';
