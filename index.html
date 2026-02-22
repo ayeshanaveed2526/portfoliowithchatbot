@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ayesha Naveed | Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts: Montserrat & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="animate__animated animate__fadeInDown">
+        <h2 class="logo">Ayesha<span style="color:var(--accent)">.</span></h2>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button id="theme-toggle" title="Toggle theme"><i class="fas fa-moon"></i></button>
+    </nav>
+
+    <!-- Header -->
+    <section id="home" class="hero">
+        <div class="hero-text animate__animated animate__fadeInLeft fade-in">
+            <h1>Hi, I'm <span style="color:var(--accent)">Ayesha Naveed</span></h1>
+            <h3>Computer Science Student <span class="dot">•</span> Frontend Developer</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
+            <a href="#projects" class="btn">View My Work <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Image Section (Add your image later) -->
+        <div class="hero-image animate__animated animate__fadeInRight fade-in">
+            <img src="Gemini_Generated_Image_1jsymz1jsymz1jsy (1).png" alt="Ayesha Image">
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="fade-in">
+        <h2>About Me</h2>
+        <p>
+            Motivated and detail-oriented Computer Science student with hands-on experience 
+            in web development, automation bots, and modern frontend technologies. 
+            Skilled in building responsive, user-focused applications using React.js and JavaScript.
+        </p>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="fade-in">
+        <h2>Technical Skills</h2>
+        <div class="skills-container fade-in">
+            <div>HTML</div>
+            <div>CSS</div>
+            <div>JavaScript</div>
+            <div>React.js</div>
+            <div>Python</div>
+            <div>C++</div>
+            <div>Firebase</div>
+            <div>Git & GitHub</div>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="fade-in">
+        <h2>Experience</h2>
+        <h3>Web Development Intern — Codieze</h3>
+        <p>Feb 2025 – May 2025</p>
+        <p>
+            Worked on frontend development using HTML, CSS, JavaScript, and React.js. 
+            Built responsive UI components and contributed to an e-medical application.
+        </p>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="fade-in">
+        <h2>Projects</h2>
+
+        <div class="project-card fade-in">
+            <h3>Upwork Jobs Discord Bot</h3>
+            <p>Automated Discord bot that fetches Upwork job listings.</p>
+            <a href="https://github.com/ayeshanaveed2526/Upwork-jobs-discord-bot.git" target="_blank">GitHub</a>
+            <a href="https://www.loom.com/share/3a37beb46c31464093a3f669bf89e118" target="_blank">Demo</a>
+        </div>
+
+        <div class="project-card fade-in">
+            <h3>Smart AI Chatbox</h3>
+            <p>Responsive AI chatbot with Google AI Studio API.</p>
+        </div>
+
+        <div class="project-card fade-in">
+            <h3>Reszo Restaurant App</h3>
+            <a href="https://reszo-restaurant.vercel.app" target="_blank">Live Demo</a>
+        </div>
+
+        <div class="project-card fade-in">
+            <h3>TextUtils React App</h3>
+            <a href="https://my-react-app-two-sandy.vercel.app/" target="_blank">Live Demo</a>
+        </div>
+
+        <div class="project-card fade-in">
+            <h3>Simulation of Interrupts</h3>
+            <a href="https://github.com/ayeshanaveed2526/simulationofinterrupts.git" target="_blank">GitHub</a>
+        </div>
+
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="fade-in">
+        <h2>Contact Me</h2>
+        <p>Email: <a href="mailto:ayeshanaveed2526@gmail.com">ayeshanaveed2526@gmail.com</a></p>
+        <p>
+            <a href="https://www.linkedin.com/in/ayesha-naveed25" target="_blank">LinkedIn</a> |
+            <a href="https://github.com/ayeshanaveed2526" target="_blank">GitHub</a>
+        </p>
+    </section>
+
+    <!-- Chatbot Button -->
+    <div class="chatbot-btn" onclick="openChatbot()">
+        💬
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div class="chatbot-modal" id="chatbotModal">
+        <div class="chat-header-modal">
+            <div style="flex: 1; text-align: center;">
+                <h1>Ask About Ayesha</h1>
+                <p>Your AI guide to my profile, projects & experience</p>
+            </div>
+            <button class="chat-close-btn" onclick="closeChatbot()" title="Close chat" aria-label="Close chatbot">×</button>
+        </div>
+        
+        <div class="api-key-container-modal">
+            <input type="password" id="apiKey" class="api-key-input" placeholder="Enter your Open Router API Key" value="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">
+            <div class="info-text">✓ API key is pre-configured. You can start chatting!</div>
+            <div class="api-key-status" id="apiKeyStatus">API key is valid!</div>
+        </div>
+        
+        <div class="chat-messages-modal" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">
+                    👋 Hi there! I'm Ayesha's AI assistant. I have comprehensive knowledge about her education, work experience, projects, technical skills, achievements, goals, and even her calligraphy business! Feel free to ask me anything about Ayesha - from her Computer Science journey to her artistic endeavors.
+                </div>
+                <div class="timestamp">Just now</div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <input type="text" id="userInput" placeholder="Ask about my education, projects, skills, or experience...">
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Ayesha Naveed. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
