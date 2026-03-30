@@ -2,11 +2,6 @@
 // This keeps your API key secure on the server side
 
 export default async function handler(req, res) {
-    // Only allow POST requests
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     // Enable CORS for your domain
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -15,6 +10,11 @@ export default async function handler(req, res) {
     // Handle preflight request
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
+    }
+
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
@@ -49,11 +49,34 @@ export default async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
+        // Check if response has content before parsing
+        const responseText = await response.text();
+        
+        if (!responseText || responseText.trim() === '') {
+            console.error('Empty response from OpenRouter API');
+            return res.status(500).json({ 
+                error: 'Empty response from AI service',
+                message: 'The AI service returned an empty response. Please try again.' 
+            });
+        }
+
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('Failed to parse OpenRouter response:', responseText);
+            return res.status(500).json({ 
+                error: 'Invalid response format',
+                message: 'The AI service returned an invalid response. Please try again.' 
+            });
+        }
 
         if (!response.ok) {
             console.error('OpenRouter API error:', data);
-            return res.status(response.status).json(data);
+            return res.status(response.status).json({
+                error: data.error || 'API request failed',
+                message: data.message || 'An error occurred while processing your request'
+            });
         }
 
         return res.status(200).json(data);

@@ -31,7 +31,7 @@
     <section id="home" class="hero">
         <div class="hero-text animate__animated animate__fadeInLeft fade-in">
             <h1>Hi, I'm <span style="color:var(--accent)">Ayesha Naveed</span></h1>
-            <h3>Computer Science Student <span class="dot">•</span> Frontend Developer</h3>
+            <h3>Computer Science Student <span class="dot">•</span> <span id="animated-role" class="animated-role">Frontend Developer</span></h3>
             <p><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</p>
             <a href="#projects" class="btn">View My Work <i class="fas fa-arrow-right"></i></a>
         </div>
@@ -55,15 +55,37 @@
     <!-- Skills -->
     <section id="skills" class="fade-in">
         <h2>Technical Skills</h2>
-        <div class="skills-container fade-in">
-            <div>HTML</div>
-            <div>CSS</div>
-            <div>JavaScript</div>
-            <div>React.js</div>
-            <div>Python</div>
-            <div>C++</div>
-            <div>Firebase</div>
-            <div>Git & GitHub</div>
+        <div class="skills-animated-grid fade-in">
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.05s"><i class="fab fa-html5"></i> HTML5</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.1s"><i class="fab fa-css3-alt"></i> CSS3</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.15s"><i class="fab fa-js"></i> JavaScript</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.2s"><i class="fab fa-react"></i> React.js</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.25s"><i class="fas fa-wind"></i> Tailwind CSS</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.3s"><i class="fas fa-laptop-code"></i> Responsive Web Design</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.35s"><i class="fab fa-python"></i> Python</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.4s"><i class="fas fa-code"></i> C++</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.45s"><i class="fas fa-database"></i> REST APIs</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.5s"><i class="fas fa-fire"></i> Firebase (Basic)</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.55s"><i class="fas fa-code-branch"></i> API Integration</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.6s"><i class="fas fa-brain"></i> Pandas</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.65s"><i class="fas fa-brain"></i> NumPy</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.7s"><i class="fas fa-brain"></i> NLTK</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.75s"><i class="fas fa-brain"></i> Scikit-learn (Basic)</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.8s"><i class="fas fa-robot"></i> NLP Fundamentals</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.85s"><i class="fas fa-cogs"></i> n8n</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.9s"><i class="fas fa-cogs"></i> Workflow Automation</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:0.95s"><i class="fab fa-git-alt"></i> Git</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1s"><i class="fab fa-github"></i> GitHub</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.05s"><i class="fas fa-code"></i> VS Code</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.1s"><i class="fas fa-fire"></i> Firebase</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.15s"><i class="fas fa-rocket"></i> Netlify</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.2s"><i class="fas fa-rocket"></i> Vercel</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.25s"><i class="fab fa-figma"></i> Figma</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.3s"><i class="fas fa-flask"></i> Google Colab</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.35s"><i class="fas fa-book"></i> Jupyter Notebook</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.4s"><i class="fab fa-slack"></i> Slack</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.45s"><i class="fab fa-trello"></i> Trello</div>
+            <div class="skill-card animate__animated animate__fadeInUp" style="animation-delay:1.5s"><i class="fas fa-video"></i> Loom</div>
         </div>
     </section>
 
@@ -163,5 +185,19 @@
 
     <script src="config.js"></script>
     <script src="script.js"></script>
+    <script>
+    // Animated subtitle roles
+    const roles = ["Frontend Developer", "AI Engineer", "Agentic AI Enthusiast"];
+    let roleIndex = 0;
+    const roleSpan = document.getElementById("animated-role");
+    function animateRole() {
+        roleIndex = (roleIndex + 1) % roles.length;
+        roleSpan.classList.remove("animate__fadeInRight");
+        void roleSpan.offsetWidth; // trigger reflow for animation
+        roleSpan.textContent = roles[roleIndex];
+        roleSpan.classList.add("animate__fadeInRight");
+    }
+    setInterval(animateRole, 2000);
+    </script>
 </body>
 </html>

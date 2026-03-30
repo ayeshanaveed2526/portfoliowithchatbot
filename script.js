@@ -362,22 +362,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
         
         try {
-            // Call our secure backend API endpoint
-            const apiEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.API_ENDPOINT) 
-                ? CONFIG.API_ENDPOINT 
-                : '/api/chat';
-
-            const response = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: message,
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `You are Ayesha Naveed's professional AI assistant embedded in her portfolio website. Your ONLY purpose is to provide detailed, accurate, and enthusiastic information about Ayesha.
+            // Detect if running locally (file:// protocol or localhost)
+            const isLocal = window.location.protocol === 'file:' || 
+                          window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1';
+            
+            const systemPrompt = `You are Ayesha Naveed's professional AI assistant embedded in her portfolio website. Your ONLY purpose is to provide detailed, accurate, and enthusiastic information about Ayesha.
 
 RULES:
 - ONLY answer questions about Ayesha Naveed
@@ -401,33 +391,100 @@ When answering:
 - If asked about skills, categorize them (programming, tools, soft skills)
 - If asked about goals, explain both short-term and long-term aspirations
 - Highlight her unique journey from Pre-Medical to Computer Science
-- Format responses with clear structure: use bullet points for lists, bold for emphasis`
-                        },
-                        {
-                            role: 'user',
-                            content: message
-                        }
-                    ]
-                })
-            });
+- Format responses with clear structure: use bullet points for lists, bold for emphasis`;
+
+            const messages = [
+                {
+                    role: 'system',
+                    content: systemPrompt
+                },
+                {
+                    role: 'user',
+                    content: message
+                }
+            ];
+
+            let response, data;
+
+            if (isLocal) {
+                // Local testing mode - call OpenRouter API directly
+                const apiKey = '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';
+                
+                response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Ayesha Portfolio Chatbot'
+                    },
+                    body: JSON.stringify({
+                        model: 'openai/gpt-3.5-turbo',
+                        messages: messages,
+                        temperature: 0.7,
+                        max_tokens: 800
+                    })
+                });
+            } else {
+                // Production mode - use Vercel serverless function
+                const apiEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.API_ENDPOINT) 
+                    ? CONFIG.API_ENDPOINT 
+                    : '/api/chat';
+
+                response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        messages: messages
+                    })
+                });
+            }
             
-            const data = await response.json();
+            // Check if response is ok before parsing
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch (e) {
+                    throw new Error(`Server error (${response.status}): ${errorText || 'Unknown error'}`);
+                }
+                throw new Error(errorData.message || errorData.error || `Server error (${response.status})`);
+            }
+            
+            // Safely parse JSON response
+            const responseText = await response.text();
+            if (!responseText || responseText.trim() === '') {
+                throw new Error('Received empty response from server. Please try again.');
+            }
+            
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('Failed to parse response:', responseText);
+                throw new Error('Received invalid response from server. Please try again.');
+            }
             
             // Hide typing indicator
             typingIndicator.style.display = 'none';
             
             if (data.error) {
-                addMessage(`Error: ${data.error.message || data.error}`, false);
-            } else if (data.choices && data.choices[0]) {
+                const errorMsg = typeof data.error === 'string' ? data.error : (data.error.message || 'An error occurred');
+                addMessage(`Sorry, there was an issue: ${errorMsg}. Please try again.`, false);
+            } else if (data.choices && data.choices[0] && data.choices[0].message) {
                 const botResponse = data.choices[0].message.content;
                 addMessage(botResponse, false);
             } else {
-                addMessage('Sorry, I received an unexpected response. Please try again.', false);
+                addMessage('Sorry, I received an unexpected response format. Please try again.', false);
             }
             
         } catch (error) {
             typingIndicator.style.display = 'none';
-            addMessage(`Error: ${error.message}. Please try again.`, false);
+            console.error('Chat error:', error);
+            addMessage(`Sorry, something went wrong: ${error.message}. Please try again.`, false);
         }
     }
 
