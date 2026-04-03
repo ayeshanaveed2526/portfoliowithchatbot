@@ -362,11 +362,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
         
         try {
-            // Detect if running locally (file:// protocol or localhost)
-            const isLocal = window.location.protocol === 'file:' || 
-                          window.location.hostname === 'localhost' || 
-                          window.location.hostname === '127.0.0.1';
-            
             const systemPrompt = `You are Ayesha Naveed's professional AI assistant embedded in her portfolio website. Your ONLY purpose is to provide detailed, accurate, and enthusiastic information about Ayesha.
 
 RULES:
@@ -404,44 +399,20 @@ When answering:
                 }
             ];
 
-            let response, data;
+            const apiEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.API_ENDPOINT) 
+                ? CONFIG.API_ENDPOINT 
+                : '/api/chat';
 
-            if (isLocal) {
-                // Local testing mode - call OpenRouter API directly
-                const apiKey = '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';
-                
-                response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`,
-                        'HTTP-Referer': window.location.href,
-                        'X-Title': 'Ayesha Portfolio Chatbot'
-                    },
-                    body: JSON.stringify({
-                        model: 'openai/gpt-3.5-turbo',
-                        messages: messages,
-                        temperature: 0.7,
-                        max_tokens: 800
-                    })
-                });
-            } else {
-                // Production mode - use Vercel serverless function
-                const apiEndpoint = (typeof CONFIG !== 'undefined' && CONFIG.API_ENDPOINT) 
-                    ? CONFIG.API_ENDPOINT 
-                    : '/api/chat';
-
-                response = await fetch(apiEndpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        messages: messages
-                    })
-                });
-            }
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: message,
+                    messages: messages
+                })
+            });
             
             // Check if response is ok before parsing
             if (!response.ok) {
