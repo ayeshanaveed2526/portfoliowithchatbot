@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         }
 
         // Get API key from environment variable
-        const apiKey = process.env.VITE_OPENROUTER_API_KEY;
+        const apiKey = process.env.OPENROUTER_API_KEY || process.env.VITE_OPENROUTER_API_KEY;
 
         if (!apiKey) {
             console.error('API key not found in environment variables');
