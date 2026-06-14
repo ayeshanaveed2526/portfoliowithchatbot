@@ -131,7 +131,7 @@ nav a:hover {
     align-items: center;
     padding: 120px 80px 100px 80px;
     min-height: 80vh;
-    background: var(--card-bg);
+    background: transparent;
     color: var(--text);
     position: relative;
     overflow: hidden;
@@ -239,7 +239,7 @@ nav a:hover {
 section {
     padding: 100px 80px;
     text-align: center;
-    background: var(--bg);
+    background: transparent;
     color: var(--text);
     transition: background var(--transition), color var(--transition);
 }
@@ -308,7 +308,9 @@ section>p {
 }
 
 .skill-bento-card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 30px;
@@ -388,7 +390,9 @@ section>p {
 
 .project-card {
     padding: 40px;
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 24px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
@@ -535,6 +539,62 @@ footer {
     height: 100vh;
     z-index: -1;
     pointer-events: none;
+}
+
+/* Animated Background Blobs */
+.bg-animation-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    filter: blur(90px);
+    opacity: 0.5;
+    border-radius: 50%;
+    animation: moveBlobs 20s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: var(--accent);
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    bottom: -10%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: var(--accent-glow);
+    animation-duration: 25s;
+    animation-direction: alternate-reverse;
+}
+
+.blob-3 {
+    top: 40%;
+    left: 30%;
+    width: 40vw;
+    height: 40vw;
+    background: var(--border-color);
+    animation-duration: 30s;
+    animation-delay: 5s;
+}
+
+@keyframes moveBlobs {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(15vw, 15vh) scale(1.1); }
+    66% { transform: translate(-10vw, 20vh) scale(0.9); }
+    100% { transform: translate(20vw, -15vh) scale(1.2); }
 }
 
 /* Custom CSS Keyframes */
@@ -833,6 +893,53 @@ footer {
 .chatbot-modal.active {
     display: flex;
     flex-direction: column;
+}
+
+/* Scroll Progress Bar */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), #b8865a);
+    width: 0%;
+    z-index: 9999;
+    transition: width 0.1s ease;
+}
+
+/* Custom Cursor */
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    pointer-events: none;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hide default cursor on desktop */
+@media (min-width: 1025px) {
+    body, a, button, .project-card, .skill-bento-card {
+        cursor: none;
+    }
 }
 
 @keyframes slideUp {

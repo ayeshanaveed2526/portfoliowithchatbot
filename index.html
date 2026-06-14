@@ -13,6 +13,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress-bar" id="scroll-progress"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Animated Background Blobs -->
+    <div class="bg-animation-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
     <!-- Three.js Background -->
     <canvas id="three-canvas"></canvas>
 
@@ -289,7 +303,7 @@
     </script>
 
     <script>
-    // Three.js Background Animation
+    // Advanced Three.js Plexus Background
     const canvas = document.getElementById('three-canvas');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -299,54 +313,96 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     
     // Create particles
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 700;
-    
-    const posArray = new Float32Array(particlesCount * 3);
-    for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 10;
+    const particlesCount = 150;
+    const positions = new Float32Array(particlesCount * 3);
+    const velocities = [];
+
+    for(let i = 0; i < particlesCount * 3; i+=3) {
+        positions[i] = (Math.random() - 0.5) * 20;
+        positions[i+1] = (Math.random() - 0.5) * 20;
+        positions[i+2] = (Math.random() - 0.5) * 20;
+        velocities.push({
+            x: (Math.random() - 0.5) * 0.02,
+            y: (Math.random() - 0.5) * 0.02,
+            z: (Math.random() - 0.5) * 0.02
+        });
     }
     
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesGeometry = new THREE.BufferGeometry();
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     
-    // Material
     const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.02,
+        size: 0.06,
         color: 0xd4a574,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.8,
         blending: THREE.AdditiveBlending
     });
     
-    // Mesh
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
+
+    // Create lines
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: 0xd4a574,
+        transparent: true,
+        opacity: 0.15
+    });
+    const lineGeometry = new THREE.BufferGeometry();
+    const lineMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(lineMesh);
     
-    camera.position.z = 3;
+    camera.position.z = 7;
     
-    // Mouse interaction
     let mouseX = 0;
     let mouseY = 0;
     
     document.addEventListener('mousemove', (event) => {
-        mouseX = event.clientX / window.innerWidth - 0.5;
-        mouseY = event.clientY / window.innerHeight - 0.5;
+        mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
     });
-    
-    // Animation loop
-    const clock = new THREE.Clock();
     
     function animateThree() {
         requestAnimationFrame(animateThree);
-        const elapsedTime = clock.getElapsedTime();
         
-        particlesMesh.rotation.y = elapsedTime * 0.05;
-        particlesMesh.rotation.x = elapsedTime * 0.02;
+        const posArray = particlesMesh.geometry.attributes.position.array;
         
-        if (mouseX > 0) {
-            particlesMesh.rotation.x += mouseY * 0.05;
-            particlesMesh.rotation.y += mouseX * 0.05;
+        // Update particles
+        for(let i = 0; i < particlesCount; i++) {
+            posArray[i*3] += velocities[i].x;
+            posArray[i*3+1] += velocities[i].y;
+            posArray[i*3+2] += velocities[i].z;
+
+            // Simple boundary bounce
+            if(Math.abs(posArray[i*3]) > 10) velocities[i].x *= -1;
+            if(Math.abs(posArray[i*3+1]) > 10) velocities[i].y *= -1;
+            if(Math.abs(posArray[i*3+2]) > 10) velocities[i].z *= -1;
         }
+        particlesMesh.geometry.attributes.position.needsUpdate = true;
+
+        // Update lines
+        const linePositions = [];
+        for(let i = 0; i < particlesCount; i++) {
+            for(let j = i + 1; j < particlesCount; j++) {
+                const dx = posArray[i*3] - posArray[j*3];
+                const dy = posArray[i*3+1] - posArray[j*3+1];
+                const dz = posArray[i*3+2] - posArray[j*3+2];
+                const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                
+                if(dist < 3) {
+                    linePositions.push(
+                        posArray[i*3], posArray[i*3+1], posArray[i*3+2],
+                        posArray[j*3], posArray[j*3+1], posArray[j*3+2]
+                    );
+                }
+            }
+        }
+        lineMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+
+        // Interactive camera rotation
+        camera.position.x += (mouseX * 3 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY * 3 - camera.position.y) * 0.05;
+        camera.lookAt(scene.position);
         
         renderer.render(scene, camera);
     }
@@ -362,7 +418,7 @@
 
     <script>
     // Animated subtitle roles
-    const roles = ["Frontend Developer", "AI Engineer", "Agentic AI Enthusiast"];
+    const roles = ["Frontend Developer", "Full Stack Developer", "Learning AI"];
     let roleIndex = 0;
     const roleSpan = document.getElementById("animated-role");
     function animateRole() {
@@ -373,6 +429,59 @@
         roleSpan.classList.add("animate__fadeInRight");
     }
     setInterval(animateRole, 2000);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script>
+    // Initialize Vanilla Tilt
+    VanillaTilt.init(document.querySelectorAll(".project-card"), {
+        max: 8,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.2,
+    });
+    VanillaTilt.init(document.querySelectorAll(".skill-bento-card"), {
+        max: 5,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.1,
+    });
+
+    // Custom Cursor
+    const cursorDot = document.querySelector(".cursor-dot");
+    const cursorOutline = document.querySelector(".cursor-outline");
+
+    window.addEventListener("mousemove", function (e) {
+        const posX = e.clientX;
+        const posY = e.clientY;
+
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
+
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
+    });
+
+    // Hover effect for cursor
+    document.querySelectorAll("a, button, .project-card, .skill-bento-card").forEach(el => {
+        el.addEventListener("mouseenter", () => {
+            cursorOutline.style.transform = "translate(-50%, -50%) scale(1.5)";
+            cursorOutline.style.backgroundColor = "rgba(212, 165, 116, 0.1)";
+        });
+        el.addEventListener("mouseleave", () => {
+            cursorOutline.style.transform = "translate(-50%, -50%) scale(1)";
+            cursorOutline.style.backgroundColor = "transparent";
+        });
+    });
+
+    // Scroll Progress
+    window.addEventListener("scroll", () => {
+        const scrollPx = document.documentElement.scrollTop;
+        const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = `${scrollPx / winHeightPx * 100}%`;
+        document.getElementById("scroll-progress").style.width = scrolled;
+    });
     </script>
 </body>
 </html>
