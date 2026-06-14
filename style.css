@@ -526,6 +526,39 @@ footer {
     border-top: 1px solid var(--border-color);
 }
 
+/* Three.js Background Canvas */
+#three-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Custom CSS Keyframes */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+.animated-float {
+    animation: float 4s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+    70% { box-shadow: 0 0 20px 10px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.btn:hover {
+    animation: pulse-glow 1.5s infinite;
+}
+
 /* Fade-in animations for scroll */
 .fade-in {
     opacity: 0;

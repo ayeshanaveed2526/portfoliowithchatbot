@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Three.js Background -->
+    <canvas id="three-canvas"></canvas>
 
     <!-- Navbar -->
     <nav class="animate__animated animate__fadeInDown">
@@ -37,7 +39,7 @@
         </div>
 
         <!-- Image Section (Add your image later) -->
-        <div class="hero-image animate__animated animate__fadeInRight fade-in">
+        <div class="hero-image animate__animated animate__fadeInRight fade-in animated-float">
             <img src="Gemini_Generated_Image_1jsymz1jsymz1jsy (1).png" alt="Ayesha Image">
         </div>
     </section>
@@ -47,8 +49,8 @@
         <h2>About Me</h2>
         <p>
             Motivated and detail-oriented Computer Science student with hands-on experience 
-            in web development, automation bots, and modern frontend technologies. 
-            Skilled in building responsive, user-focused applications using React.js and JavaScript.
+            in web development, automation bots, and modern full stack technologies. 
+            Skilled in building responsive, user-focused applications using React.js, JavaScript, node.js, next.js and Python and JavaScript.
         </p>
     </section>
 
@@ -120,6 +122,51 @@
                 <div class="project-links">
                     <a href="https://github.com/ayeshanaveed2526/Upwork-jobs-discord-bot.git" target="_blank"><i class="fab fa-github"></i> GitHub Code</a>
                     <a href="https://www.loom.com/share/3a37beb46c31464093a3f669bf89e118" target="_blank"><i class="fas fa-video"></i> Video Demo</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <i class="fas fa-wallet project-card-icon"></i>
+                <h3>Expense Tracker</h3>
+                <p>A smart expense tracking application for managing personal finances efficiently.</p>
+                <div class="project-links">
+                    <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> View Project</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <i class="fas fa-network-wired project-card-icon"></i>
+                <h3>AI HUB</h3>
+                <p>A centralized hub for various AI tools and models providing seamless integrations.</p>
+                <div class="project-links">
+                    <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> View Project</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <i class="fas fa-file-word project-card-icon"></i>
+                <h3>Docx Formatter</h3>
+                <p>Automated formatting tool for Word documents, standardizing styles and layouts.</p>
+                <div class="project-links">
+                    <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> View Project</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <i class="fas fa-question-circle project-card-icon"></i>
+                <h3>AI Quiz Generator</h3>
+                <p>Leveraging AI to automatically generate engaging quizzes from any given topic or text.</p>
+                <div class="project-links">
+                    <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> View Project</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <i class="fas fa-vial project-card-icon"></i>
+                <h3>Test Generator</h3>
+                <p>Dynamic test generation platform for educators to create customizable assessments.</p>
+                <div class="project-links">
+                    <a href="#" target="_blank"><i class="fas fa-external-link-alt"></i> View Project</a>
                 </div>
             </div>
 
@@ -213,6 +260,106 @@
 
     <script src="config.js"></script>
     <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script type="module">
+        import { animate, inView, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+        
+        // Framer Motion (Motion) Animations
+        animate(".hero-text h1", { y: [-50, 0], opacity: [0, 1] }, { duration: 0.8, delay: 0.2 });
+        animate(".hero-text h3", { x: [-50, 0], opacity: [0, 1] }, { duration: 0.8, delay: 0.4 });
+        animate(".hero-text p", { y: [20, 0], opacity: [0, 1] }, { duration: 0.8, delay: 0.6 });
+        
+        inView("section", (info) => {
+            animate(info.target, { opacity: [0, 1], y: [40, 0] }, { duration: 0.8 });
+        });
+
+        inView(".projects-grid", () => {
+            animate(".project-card", { opacity: [0, 1], scale: [0.9, 1] }, { 
+                delay: stagger(0.1),
+                duration: 0.5 
+            });
+        });
+        
+        inView(".skills-bento", () => {
+            animate(".skill-bento-card", { opacity: [0, 1], x: [-30, 0] }, { 
+                delay: stagger(0.15),
+                duration: 0.6 
+            });
+        });
+    </script>
+
+    <script>
+    // Three.js Background Animation
+    const canvas = document.getElementById('three-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    // Create particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 700;
+    
+    const posArray = new Float32Array(particlesCount * 3);
+    for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    
+    // Material
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        color: 0xd4a574,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+    });
+    
+    // Mesh
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    camera.position.z = 3;
+    
+    // Mouse interaction
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX / window.innerWidth - 0.5;
+        mouseY = event.clientY / window.innerHeight - 0.5;
+    });
+    
+    // Animation loop
+    const clock = new THREE.Clock();
+    
+    function animateThree() {
+        requestAnimationFrame(animateThree);
+        const elapsedTime = clock.getElapsedTime();
+        
+        particlesMesh.rotation.y = elapsedTime * 0.05;
+        particlesMesh.rotation.x = elapsedTime * 0.02;
+        
+        if (mouseX > 0) {
+            particlesMesh.rotation.x += mouseY * 0.05;
+            particlesMesh.rotation.y += mouseX * 0.05;
+        }
+        
+        renderer.render(scene, camera);
+    }
+    
+    animateThree();
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    </script>
+
     <script>
     // Animated subtitle roles
     const roles = ["Frontend Developer", "AI Engineer", "Agentic AI Enthusiast"];
